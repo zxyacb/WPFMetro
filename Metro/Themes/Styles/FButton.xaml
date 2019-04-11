@@ -1,0 +1,115 @@
+﻿<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="clr-namespace:Metro.Controls">
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="/Metro;component/Themes/Styles/Colors.xaml"/>
+    </ResourceDictionary.MergedDictionaries>
+    <Style x:Key="FIcon" TargetType="TextBlock">
+        <Setter Property="FontFamily" Value="/Metro;component/Resources/#SF2015"></Setter>
+        <Setter Property="Foreground" Value="{StaticResource TextForeground}"/>
+        <Setter Property="TextAlignment" Value="Center"/>
+        <Setter Property="HorizontalAlignment" Value="Center"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+    </Style>
+
+    <!--将 TargetType 属性设置为 TextBlock 而不为样式分配 x:Key，样式就会应用于所有 TextBlock 元素。
+    这种情况下，x:Key 隐式设置为 {x:Type TextBlock}-->
+    <Style TargetType="{x:Type local:FButton}">
+        <Setter Property="Background" Value="{StaticResource ButtonBackground}" />
+        <Setter Property="Foreground" Value="{StaticResource ButtonForeground}" />
+        <Setter Property="MouseOverBackground" Value="{StaticResource ButtonMouseOverBackground}" />
+        <Setter Property="MouseOverForeground" Value="{StaticResource ButtonMouseOverForeground}" />
+        <Setter Property="PressedBackground" Value="{StaticResource ButtonPressedBackground}" />
+        <Setter Property="PressedForeground" Value="{StaticResource ButtonPressedForeground}" />
+        <Setter Property="HorizontalContentAlignment" Value="Center" />
+        <Setter Property="Width" Value="100" />
+        <Setter Property="Height" Value="30" />
+        <Setter Property="FontSize" Value="13" />
+        <Setter Property="CornerRadius" Value="0" />
+        <Setter Property="FIconSize" Value="20" />
+        <Setter Property="Padding" Value="3,1,3,1" />
+        <Setter Property="Content" Value="{x:Null}" />
+        <Setter Property="FIconMargin" Value="0,0,5,0" />
+        <Setter Property="AllowsAnimation" Value="False" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type local:FButton}">
+                    <Border x:Name="border" Background="{TemplateBinding Background}" 
+                                    Height="{TemplateBinding Height}" 
+                                    CornerRadius="{TemplateBinding CornerRadius}" 
+                                    BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}"
+                                    Width="{TemplateBinding Width}">
+                        <!--Icon/Text-->
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center" 
+                        Margin="{TemplateBinding Padding}"
+                        HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}">
+                            <TextBlock x:Name="icon"  Margin="{TemplateBinding FIconMargin}" 
+                           RenderTransformOrigin="0.5,0.5" Style="{StaticResource FIcon}"
+                           Text="{TemplateBinding FIcon}"
+                           FontSize="{TemplateBinding FIconSize}" 
+                           Foreground="{TemplateBinding Foreground}">
+                                <TextBlock.RenderTransform>
+                                    <RotateTransform x:Name="transIcon" Angle="0"/>
+                                </TextBlock.RenderTransform>
+                            </TextBlock>
+
+                            <TextBlock VerticalAlignment="Center"  x:Name="txt" 
+                           TextDecorations="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=ContentDecorations}" 
+                                               Text="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=Content}" 
+                                               FontSize="{TemplateBinding FontSize}" 
+                                               Foreground="{TemplateBinding Foreground}"/>
+                        </StackPanel>
+                    </Border>
+                    <!--触发器-->
+                    <ControlTemplate.Triggers>
+                        <!--设置鼠标进入时的背景、前景样式-->
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Background" Value="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, 
+                                Path=MouseOverBackground}" TargetName="border" />
+                            <Setter Property="Foreground" Value="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, 
+                                Path=MouseOverForeground}" TargetName="icon"/>
+                            <Setter Property="Foreground" Value="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, 
+                                Path=MouseOverForeground}" TargetName="txt"/>
+                        </Trigger>
+                        <!--Ficon的动画触发器-->
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="IsMouseOver" Value="true"></Condition>
+                                <Condition Property="AllowsAnimation" Value="true"></Condition>
+                            </MultiTrigger.Conditions>
+                            <MultiTrigger.EnterActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation Storyboard.TargetName="transIcon" Storyboard.TargetProperty="Angle" To="180" Duration="0:0:0.2" />
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </MultiTrigger.EnterActions>
+                            <MultiTrigger.ExitActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation Storyboard.TargetName="transIcon" Storyboard.TargetProperty="Angle" To="0" Duration="0:0:0.2" />
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </MultiTrigger.ExitActions>
+                        </MultiTrigger>
+                        <!--鼠标按下时的前景、背景样式-->
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter Property="Background" Value="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, 
+                                Path=PressedBackground}" TargetName="border" />
+                            <Setter Property="Foreground" Value="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, 
+                                Path=PressedForeground}" TargetName="icon"/>
+                            <Setter Property="Foreground" Value="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, 
+                                Path=PressedForeground}" TargetName="txt"/>
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="false">
+                            <Setter Property="Opacity" Value="0.5" TargetName="border"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+
+</ResourceDictionary>
